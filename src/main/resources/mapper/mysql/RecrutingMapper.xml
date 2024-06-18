@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="band.portfolio.repository.RecrutingMapper">
+
+	<!-- 募集記事登録 -->
+	<insert id="insertOne">
+		insert into band_recruting(
+			user_id,
+			title,
+			content,
+			is_deleted
+			)
+			values(
+				1,
+				#{title},
+				#{content},
+				0
+			);
+	</insert>
+	
+	<!-- 募集記事一覧取得 -->
+	<select id="findList" resultType="Recruting">
+		select 
+		  * 
+		from 
+		  band_recruting
+	</select>
+
+</mapper>
