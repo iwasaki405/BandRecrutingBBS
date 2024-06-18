@@ -2,7 +2,6 @@ package band.portfolio.controller;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -35,6 +34,10 @@ public class BBSController {
 		List<Recruting> recrutingList = recrutingService.getList();
 		model.addAttribute("recrutingList", recrutingList);
 
+		for(Recruting item : recrutingList) {
+			item.setCreateDateTime(LocalDateTime.ofInstant(item.getCreateDateTime().toInstant(), ZoneId.systemDefault()));
+		}
+		
 		return "top";
 	}
 	
