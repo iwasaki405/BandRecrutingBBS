@@ -10,5 +10,8 @@ public interface RecrutingService {
 	public void post(Recruting recruting);
 	
 	/** 募集記事一覧取得 */
-	public List<Recruting> getList();
+	public List<Recruting> getList(String searchParam);
+	
+	/** 募集記事1件取得 */
+	public Recruting getPostOne(Integer recrutingId);
 }

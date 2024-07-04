@@ -9,22 +9,35 @@
 </head>
 <body>
 	<div layout:fragment="content">
-		<a th:href="@{/recruting}">＋バンドメンバー募集</a>
+		<br>
+		<a class="btn btn-dark" th:href="@{/recruting}" role="button">バンドメンバー募集</a>
+		<br><br>
 		<!-- 検索 -->
-		<form class="d-flex" role="search" method="get" th:action="@{/top}">
-			<input type="search" class="form-control me-2" placeholeder="Search" name="searchParam"/>
-			<button class="btn btn-outline-success text-nowrap" type="submit">検索</button>
-		</form>
+		<div class="input-group mb-3">
+			<form class="form-inline" role="search" method="get" th:action="@{/top}">
+				<input type="search" class="form-control-sm"  placeholder="Search" name="searchParam">
+				<button class="btn btn-outline-secondary text-nowrap" type="submit">検索</button>
+			</form>
+		</div>
+		<br>
+		<!-- 一覧表示 -->
 		<table class="table table-striped table-hover">
 	    	<tbody>
 		    	<tr th:each="item : ${recrutingList}">
 				  <td>
-					  <a href="#" th:text="${item.title}"></a>
+					  <a th:href="@{'/individual_post/' + ${item.recrutingId}}" th:text="${item.title}"></a>
+					  <p th:text="${item.createDateTime}"></p>
+					  <p th:text="${item.content}"></p>
+					  <p th:text="${item.recrutingId}"></p>
 				  </td>
-				  <td></td>
 				</tr>
 			</tbody>
 		</table>
+		<th:block th:if="${searchParam} != null">
+			<a class="btn btn-outline-primary" th:href="@{/top}">
+			 	戻る
+			</a>
+		</th:block>
 	</div>
 </body>
 </html>

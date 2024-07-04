@@ -23,7 +23,13 @@ public class RecrutingServiceImpl implements RecrutingService {
 	
 	/** 募集記事一覧取得 */
 	@Override
-	public List<Recruting> getList(){
-		return mapper.findList();
+	public List<Recruting> getList(String searchParam){
+		return mapper.findList(searchParam);
+	}
+	
+	/** 募集記事1件取得 */
+	@Override
+	public Recruting getPostOne(Integer recrutingId) {
+		return mapper.findOne(recrutingId);
 	}
 }

@@ -1,11 +1,11 @@
-package band.portfolio.domain.band.model;
+package band.portfolio.form;
 
 import java.time.LocalDate;
 
 import lombok.Data;
 
 @Data
-public class Recruting {
+public class IndividualPostForm {
 	
 	private Integer recrutingId;
 	private Integer userId;
@@ -14,5 +14,5 @@ public class Recruting {
 	private Integer isDeleted;
 	private LocalDate createDateTime;
 	private LocalDate updateDateTime;
-
+	
 }

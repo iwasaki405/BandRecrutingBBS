@@ -13,5 +13,8 @@ public interface RecrutingMapper {
 	public void insertOne(Recruting recruting);
 	
 	/** 募集記事一覧取得 */
-	public List<Recruting> findList();
+	public List<Recruting> findList(String searchParam);
+	
+	/** 募集記事1件取得 */
+	public Recruting findOne(Integer recrutingId);
 }
