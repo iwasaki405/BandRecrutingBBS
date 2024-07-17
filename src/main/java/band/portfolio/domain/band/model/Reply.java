@@ -5,14 +5,14 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-public class Recruting {
-	
-	private Integer recrutingId;
+public class Reply {
+
+	private Integer replyId;
 	private Integer userId;
-	private String title;
+	private Integer recruitingId;
 	private String content;
 	private Integer isDeleted;
 	private LocalDate createDateTime;
 	private LocalDate updateDateTime;
-
+	
 }

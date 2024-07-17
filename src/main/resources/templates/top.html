@@ -10,7 +10,7 @@
 <body>
 	<div layout:fragment="content">
 		<br>
-		<a class="btn btn-dark" th:href="@{/recruting}" role="button">バンドメンバー募集</a>
+		<a class="btn btn-dark" th:href="@{/recruiting}" role="button">バンドメンバー募集</a>
 		<br><br>
 		<!-- 検索 -->
 		<div class="input-group mb-3">
@@ -23,12 +23,10 @@
 		<!-- 一覧表示 -->
 		<table class="table table-striped table-hover">
 	    	<tbody>
-		    	<tr th:each="item : ${recrutingList}">
+		    	<tr th:each="item : ${recruitingList}">
 				  <td>
-					  <a th:href="@{'/individual_post/' + ${item.recrutingId}}" th:text="${item.title}"></a>
+					  <a th:href="@{'/individual_post/' + ${item.recruitingId}}" th:text="${item.title}"></a>
 					  <p th:text="${item.createDateTime}"></p>
-					  <p th:text="${item.content}"></p>
-					  <p th:text="${item.recrutingId}"></p>
 				  </td>
 				</tr>
 			</tbody>

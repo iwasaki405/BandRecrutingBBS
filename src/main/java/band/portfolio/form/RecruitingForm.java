@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class RecrutingForm {
+public class RecruitingForm {
 	
 	@NotNull
 	private Integer userId = 1;

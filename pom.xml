@@ -92,12 +92,11 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.31</version>
 		</dependency>
-		<!-- SpringSecurity 
+		<!-- SpringSecurity -->
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		-->
 		<!-- Thymeleaf拡張ライブラリ-->
 		<dependency>
 		    <groupId>org.thymeleaf.extras</groupId>

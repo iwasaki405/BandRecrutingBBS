@@ -1,13 +1,12 @@
-package band.portfolio.form;
+package band.portfolio.domain.band.model;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import band.portfolio.domain.band.model.Reply;
 import lombok.Data;
 
 @Data
-public class IndividualPostForm {
+public class Recruiting {
 	
 	private Integer recruitingId;
 	private Integer userId;
@@ -17,5 +16,4 @@ public class IndividualPostForm {
 	private LocalDate createDateTime;
 	private LocalDate updateDateTime;
 	private List<Reply> replyList;
-	
 }

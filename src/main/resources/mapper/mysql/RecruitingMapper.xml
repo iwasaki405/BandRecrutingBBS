@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="band.portfolio.repository.RecruitingMapper">
+
+<!-- マッピング定義（募集側） -->
+<resultMap type="band.portfolio.domain.band.model.Recruiting" id="recruiting">
+	<id column="id" property="recruitingId" />
+	<result column="user_id" property="userId" />
+	<result column="title" property="title" />
+	<result column="content" property="content" />
+	<result column="is_deleted" property="isDeleted" />
+	<result column="create_date_time" property="createDateTime" />
+	<result column="update_date_time" property="updateDateTime" />
+	<collection property="replyList" resultMap="reply" columnPrefix="reply_" />
+</resultMap>
+
+<!-- マッピング定義（返信側） -->
+<resultMap type="band.portfolio.domain.band.model.Reply" id="reply">
+	<id column="id" property="replyId" />
+	<result column="user_id" property="userId" />
+	<result column="recruiting_id" property="recruitingId" />	
+	<result column="content" property="content" />
+	<result column="is_deleted" property="isDeleted" />
+	<result column="create_date_time" property="createDateTime" />
+	<result column="update_date_time" property="updateDateTime" />
+</resultMap>
+
+
+	<!-- 募集記事投稿 -->
+	<insert id="insertOne">
+		insert into band_recruiting(
+			user_id,
+			title,
+			content,
+			is_deleted
+			)
+			values(
+				1,
+				#{title},
+				#{content},
+				0
+			);
+	</insert>
+	
+	<!-- 募集記事一覧取得 -->
+	<select id="findList" resultType="Recruiting" resultMap="recruiting">
+		select 
+		  * 
+		from 
+		  band_recruiting
+		where 
+			is_deleted = 0 
+		<if test="searchParam != null"> 
+			and 
+			title like concat('%', #{searchParam}, '%')
+		</if>
+		order by 
+		  create_date_time
+		desc  
+	</select>
+	
+	<!-- 募集記事1件取得 -->
+	<select id="findOne" resultMap="recruiting">
+		select 
+			band_recruiting.id, 
+			band_recruiting.user_id, 
+			band_recruiting.title, 
+			band_recruiting.content, 
+			band_recruiting.is_deleted, 
+			band_recruiting.create_date_time, 
+			band_reply.id as reply_id, 
+			band_reply.user_id as reply_user_id, 
+			band_reply.content as reply_content, 
+			band_reply.is_deleted as reply_is_deleted, 
+			band_reply.create_date_time as reply_create_date_time, 
+			band_reply.update_date_time as reply_update_date_time  
+		from 
+		    band_recruiting 
+		    left join band_reply 
+		  	  on band_recruiting.id = band_reply.recruiting_id
+		where 
+		    band_recruiting.id = #{recruitingId}
+	</select>
+	
+	<!-- 募集記事削除 -->
+	<update id="deletePost">
+		update 
+			band_recruiting 
+		set 
+			is_deleted = 1 			
+		where 
+			id = #{recruitingId}		 
+	</update>
+	
+	<!-- 返信投稿 -->
+	<insert id="postOne">
+		insert into band_reply(
+			user_id,
+			recruiting_id,
+			content,
+			is_deleted
+			)
+			values(
+				1,
+				#{recruitingId},
+				#{content},
+				0
+			);
+	</insert>	
+
+	<!-- 返信削除 -->
+	<update id="deleteReply">
+		update 
+			band_reply
+		set 
+			is_deleted = 1 			
+		where 
+			id = #{replyId}		 
+	</update>	
+	
+</mapper>

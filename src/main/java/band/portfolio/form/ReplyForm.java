@@ -1,21 +1,25 @@
 package band.portfolio.form;
 
 import java.time.LocalDate;
-import java.util.List;
 
-import band.portfolio.domain.band.model.Reply;
+import org.hibernate.validator.constraints.Length;
+
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class IndividualPostForm {
-	
-	private Integer recruitingId;
+public class ReplyForm {
+
+	private Integer replyId;
 	private Integer userId;
-	private String title;
+	private Integer recruitingId;
+	
+	@NotBlank
+	@Length(max = 300)
 	private String content;
+	
 	private Integer isDeleted;
 	private LocalDate createDateTime;
 	private LocalDate updateDateTime;
-	private List<Reply> replyList;
 	
 }
