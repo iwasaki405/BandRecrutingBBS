@@ -28,9 +28,11 @@
             <a class="nav-link" href="http://localhost:8080/login">Login</a>
           </li>
 		</th:block>
+		<th:block th:if="principal.userName != null">		
 		  <li class="nav-item">
-			  <p sec:authentication="principal.userName"></p>
+			  <p sec:authentication="principal.userName"></p>		  
 		  </li>
+		</th:block>
 		  <li class="nav-item">
 			  <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
 		  </li>  
