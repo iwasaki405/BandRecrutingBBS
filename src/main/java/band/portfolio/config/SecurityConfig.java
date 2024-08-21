@@ -15,44 +15,40 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-    
-    @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-        return new MvcRequestMatcher.Builder(introspector);
-    }
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-        
-        http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers(mvc.pattern("/top")).permitAll()
-                .requestMatchers(mvc.pattern("/individual_post/{recruitingId}")).permitAll()               
-                .anyRequest().authenticated()
-        );
-        
-        http.formLogin(login -> login
-                .loginProcessingUrl("/login")
-                .loginPage("/login")
-                .failureUrl("/login?error")
-                .usernameParameter("userName")
-                .passwordParameter("password")
-                .defaultSuccessUrl("/top", true)
-                .permitAll()
-        ).logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/top")
-        );
+	@Bean
+	MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+		return new MvcRequestMatcher.Builder(introspector);
+	}
 
-        // CSRF 対策を無効に設定
-        http.csrf(csrf -> csrf
-                .disable()
-        );
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 
-        return http.build();
-    }
+		http.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+				.requestMatchers(mvc.pattern("/top")).permitAll()
+				.requestMatchers(mvc.pattern("/individual_post/{recruitingId}")).permitAll()
+				.anyRequest().authenticated());
+
+		http.formLogin(login -> login
+				.loginProcessingUrl("/login")
+				.loginPage("/login")
+				.failureUrl("/login?error")
+				.usernameParameter("userName")
+				.passwordParameter("password")
+				.defaultSuccessUrl("/top", true)
+				.permitAll()).logout(logout -> logout
+						.logoutUrl("/logout")
+						.logoutSuccessUrl("/top"));
+
+		// CSRF 対策を無効に設定
+		http.csrf(csrf -> csrf
+				.disable());
+
+		return http.build();
+	}
 }

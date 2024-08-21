@@ -6,5 +6,5 @@ public interface UserService {
 
 	/** ログインユーザー情報取得 */
 	public Users getLoginUser(String userName);
-	
+
 }

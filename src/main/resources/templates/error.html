@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Error</title>
+</head>
+<body>
+	<h1>エラーが発生しました</h1>
+	<p>ご迷惑をおかけして申し訳ございません。<br>TOP画面に戻って、もう一度操作をお試しください。</p>
+	<p>エラーコード: <span th:text="${status}"></span></p>
+	<p>問題が解決しない場合は、サポートにご連絡ください。</p>
+
+	<a th:href="@{/top}" class="btn btn-link">TOP画面に戻る</a>
+
+	<script>
+	   let redirectCount = sessionStorage.getItem('redirectCount') || 0;
+
+	   if (document.referrer.indexOf('/top') === -1 && redirectCount < 1) {
+	       sessionStorage.setItem('redirectCount', ++redirectCount);
+	       setTimeout(function() {
+	           window.location.href = '/top';
+	       }, 5000);  // 5秒後にリダイレクト
+	   } else {
+	       sessionStorage.removeItem('redirectCount');
+	   }
+	</script>
+</body>
+</html>

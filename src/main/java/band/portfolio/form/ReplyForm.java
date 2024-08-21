@@ -17,9 +17,7 @@ public class ReplyForm {
 	@NotBlank
 	@Length(max = 300)
 	private String content;
-	
-	private Integer isDeleted;
-	private LocalDate createDateTime;
+
 	private LocalDate updateDateTime;
 	
 }

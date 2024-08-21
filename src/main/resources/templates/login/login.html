@@ -1,45 +1,47 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+
 <head>
-  <meta charset="UTF-8"></meta>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <!-- 共通CSS読込 -->
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
-  <!-- 共通JS読込 -->
-  <script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
-  <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
-  <title>ログイン画面</title>
+	<meta charset="UTF-8">
+	</meta>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- 共通CSS読込 -->
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<!-- 共通JS読込 -->
+	<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
+	<title>ログイン画面</title>
 </head>
-  <body>
-    <section>
-		<div class="container mt-5 pt-5">
+
+<body>
+	<section>
+		<div layout:fragment="content" class="container mt-5 pt-5">
 			<div class="row">
 				<div class="col-12 col-sm-8 col-md-6 m-auto">
-					<div class="card border-0 shadow">
+					<div class="card border-0 shadow" style="background-color: #e3f2fd;">
 						<div class="card-body text-center">
-							<h1 class="text-muted text-decoration-underline">ログイン</h1>
-							<svg class="my-3" xmlns="http://www.w3.org/2000/svg" width="40" fill="currentColor" viewBox="0 0 16 16">
-							  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-							  <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
-							</svg><br>
-						    <p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null"
-						      th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"
-						      class="text-danger">
-						      ログインエラーメッセージ
-						    </p>
+							<h3 class="text-muted text-decoration-underline">Login</h3>
+							<p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null"
+								th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="text-danger">
+								ログインエラーメッセージ
+							</p>
 							<form th:action="@{/login}" method="post">
-								<input type="text" class="form-control my-4 py-2" placeholder="UserName" name="userName">
-								<input type="password" class="form-control my-4 py-2" placeholder="Password" name="password">
-								<div class="text-center mt-3">
-									<button class="btn btn-primary">ログイン</button>
+								<input type="text" class="form-control my-4 py-2" placeholder="UserName"
+									name="userName">
+								<input type="password" class="form-control my-4 py-2" placeholder="Password"
+									name="password">
+								<div class="d-grid gap-2">
+									<button class="btn btn-secondary">ログイン</button>
+
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>	
+		</div>
 	</section>
-  </body>
+</body>
+
 </html>

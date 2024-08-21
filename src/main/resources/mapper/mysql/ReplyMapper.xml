@@ -3,7 +3,7 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!-- Mapperとxmlのマッピング -->
-<mapper namespace="band.portfolio.repository.RecruitingMapper">
+<mapper namespace="band.portfolio.repository.ReplyMapper">
 
 	<!-- マッピング定義（募集側） -->
 	<resultMap type="band.portfolio.domain.band.model.Recruiting"
@@ -34,92 +34,65 @@
 	</resultMap>
 
 
-	<!-- 募集記事投稿 -->
-	<insert id="insertRecruiting">
-		insert into band_recruiting(
+	<!-- (MyPage)返信一覧取得 -->
+	<select id="findReplyMyList" resultMap="reply">
+		select
+			band_recruiting.id
+			as rec_id,
+			band_recruiting.title as rec_title,
+			band_reply.id,
+			band_reply.content,
+			band_reply.update_date_time
+		from
+			band_reply
+		left join
+			band_recruiting
+		on band_reply.recruiting_id = band_recruiting.id
+		where
+			band_reply.is_deleted = 0
+		and
+			band_recruiting.is_deleted = 0
+		and
+			band_reply.user_id = #{userId}
+		order by
+			band_reply.update_date_time
+		desc
+	</select>
+
+	<!-- 返信投稿 -->
+	<insert id="insertReply">
+		insert into band_reply(
 			user_id,
-			title,
+			recruiting_id,
 			content,
 			is_deleted
 		)
 		values(
 			#{userId},
-			#{title},
+			#{recruitingId},
 			#{content},
 			0
 		);
 	</insert>
 
-	<!-- 募集記事一覧取得 -->
-	<select id="findRecruitingList" resultMap="recruiting">
-		select
-			id,
-			user_id,
-			title,
-			content,
-			create_date_time
-		from
-			band_recruiting
-		where
-			is_deleted = 0
-		<if test="searchParam != null">
-			and
-				title like concat('%', #{searchParam}, '%')
-		</if>
-		order by
-			create_date_time
-		desc
-	</select>
-
-	<!-- (MyPage)募集記事一覧取得 -->
-	<select id="findRecruitingMyList" resultMap="recruiting">
-		select
-			id,
-			title,
-			content,
-			create_date_time
-		from
-			band_recruiting
-		where
-			is_deleted = 0
-		and
-			user_id = #{userId}
-		order by
-			create_date_time
-		desc
-	</select>
-
-	<!-- 募集記事1件取得 -->
-	<select id="findRecruitingById" resultMap="recruiting">
-		select
-			band_recruiting.id,
-			band_recruiting.user_id,
-			band_recruiting.title,
-			band_recruiting.content,
-			band_recruiting.create_date_time,
-			band_reply.id as reply_id,
-			band_reply.user_id as reply_user_id,
-			band_reply.content as reply_content,
-			band_reply.is_deleted as
-			reply_is_deleted,
-			band_reply.update_date_time as reply_update_date_time
-		from
-			band_recruiting
-		left join band_reply
-		on 
-			band_recruiting.id =band_reply.recruiting_id
-		where
-			band_recruiting.id = #{recruitingId}
-
-	</select>
-
-	<!-- 募集記事削除 -->
-	<update id="deleteRecruiting">
+	<!-- 返信修正 -->
+	<update id="modifyReply">
 		update
-			band_recruiting
+			band_reply
+			set
+			content = #{content}
+		where
+			id = #{replyId}
+	</update>
+
+	<!-- 返信削除 -->
+	<update id="deleteReply">
+		update
+			band_reply
 		set
 			is_deleted = 1
 		where
-			id = #{recruitingId}
+			id = #{replyId}
 	</update>
+
 </mapper>

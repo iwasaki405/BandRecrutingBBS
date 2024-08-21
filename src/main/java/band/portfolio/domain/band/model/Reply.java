@@ -14,5 +14,5 @@ public class Reply {
 	private Integer isDeleted;
 	private LocalDate createDateTime;
 	private LocalDate updateDateTime;
-	
+	private Recruiting recruiting;
 }

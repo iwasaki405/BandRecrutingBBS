@@ -6,17 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class RecruitingForm {
+public class ReplyModifyForm {
 
-	private Integer userId;
-	
-	@Length(max = 100)
-	private String title = "無題";
-	
 	@NotBlank
 	@Length(max = 300)
 	private String content;
 	
-	
-
 }

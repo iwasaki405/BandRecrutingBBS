@@ -13,9 +13,7 @@ public class IndividualPostForm {
 	private Integer userId;
 	private String title;
 	private String content;
-	private Integer isDeleted;
 	private LocalDate createDateTime;
-	private LocalDate updateDateTime;
 	private List<Reply> replyList;
 	
 }

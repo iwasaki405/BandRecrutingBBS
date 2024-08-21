@@ -9,5 +9,5 @@ public interface UserMapper {
 
 	/** ログインユーザー情報取得 */
 	public Users findLoginUser(String userName);
-	
+
 }

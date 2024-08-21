@@ -5,28 +5,29 @@
 <!-- Mapperとxmlのマッピング -->
 <mapper namespace="band.portfolio.repository.UserMapper">
 
-<!-- マッピング定義(ユーザー) -->
-  <resultMap type="band.portfolio.domain.band.model.Users" id="user">
-    <id column="id" property="userId" />
-    <id column="email_Address" property="emailAddress" />
-    <id column="pass" property="password" />
-    <id column="user_name" property="userName" />
-    <id column="is_admin" property="role" />
-    <id column="is_deleted" property="isDeleted" />
-    <id column="create_date_time" property="createDateTime" />
-    <result column="update_date_time" property="updateDateTime" />
-  </resultMap> 
-	
+	<!-- マッピング定義(ユーザー) -->
+	<resultMap type="band.portfolio.domain.band.model.Users"
+		id="user">
+		<id column="id" property="userId" />
+		<id column="email_Address" property="emailAddress" />
+		<id column="pass" property="password" />
+		<id column="user_name" property="userName" />
+		<id column="is_admin" property="role" />
+		<id column="is_deleted" property="isDeleted" />
+		<id column="create_date_time" property="createDateTime" />
+		<result column="update_date_time" property="updateDateTime" />
+	</resultMap>
+
 	<!-- ログインユーザー情報取得 -->
 	<select id="findLoginUser" resultType="Users" resultMap="user">
 		select 
 		  * 
 		from 
-		  users
+			users 
 		where 
 			is_deleted = 0 
 		and 
 			user_name = #{userName}
 	</select>
-	
+
 </mapper>

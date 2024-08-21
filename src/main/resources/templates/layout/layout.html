@@ -8,14 +8,14 @@
   <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
   <!-- 共通JS読込 -->
   <script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
-  <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.js}" defer></script>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}" defer></script>
   <title></title>
 </head>
 <body>
   <!-- ヘッダー -->
   <nav layout:replace="~{layout/header::header}"></nav>
   <!-- コンテンツ -->
-  <div class="container-fluid">
+  <div class="container">
      <div layout:fragment="content"></div>
   </div>
 </body>

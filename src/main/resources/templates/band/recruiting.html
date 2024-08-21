@@ -1,32 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>募集記事投稿画面</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>バンドメンバー募集記事投稿画面</title>
 </head>
-<body>
+<div>
 	<div layout:fragment="content">
-		<h1>バンドメンバー募集記事投稿画面</h1>
-		<form class="form" method="post" th:action="@{/recruiting_confirm}" th:object="${recruitingForm}">
-			 <input type="hidden" th:field="*{userId}">
-			 <div class="mb-3">
-				 <label class="form-label">タイトル</label>
-				 <input type="text" class="form-control" th:field="*{title}" th:errorclass="is-invalid">
-				 <div class="invalid-feedback" th:errors="*{title}"></div>
-			 </div>
-			 <div class="mb-3">
-				 <label class="form-label">募集文</label>
-				 <textarea class="form-control" th:field="*{content}" th:errorclass="is-invalid"></textarea>
-				 <div class="invalid-feedback" th:errors="*{content}"></div>
-			 </div>
-			 <button type="submit" class="btn btn-outline-primary">投稿</button>
-			 <a class="btn btn-outline-warning" th:href="@{/top}">
-				キャンセル
-			 </a>
-	    </form>
+		<h1 class="text-center mt-5 mb-4">バンドメンバー募集記事投稿画面</h1>
+		<form class="form" method="post" th:action="@{/recruiting}" th:object="${recruitingForm}">
+
+			<div class="mb-3">
+				<label class="form-label">タイトル</label>
+				<input type="text" class="form-control" th:field="*{title}" th:errorclass="is-invalid">
+				<div class="invalid-feedback" th:errors="*{title}"></div>
+			</div>
+			<div class="mb-3">
+				<label class="form-label">募集文 <span class="badge bg-danger">必須</span></label>
+				<textarea class="form-control" th:field="*{content}" th:errorclass="is-invalid" rows="7"
+					wrap="hard"></textarea>
+				<div class="invalid-feedback" th:errors="*{content}"></div>
+			</div>
+			<div class="d-flex justify-content-end align-items-center mt-4 mb-5">
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+					data-bs-target="#postModal">
+					投稿
+				</button>
+				<!-- Modal -->
+				<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel"
+					aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h1 class="modal-title fs-5" id="postModalLabel">投稿確認画面</h1>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Close"></button>
+							</div>
+							<div class="modal-body">
+								投稿してもよろしいですか？
+							</div>
+							<div class="modal-footer">
+								<button type="submit" class="btn btn-outline-primary bt">投稿</button>
+								<button type="button" class="btn btn-outline-secondary"
+									data-bs-dismiss="modal">キャンセル</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a class="btn btn-outline-secondary btn-sm ms-2" th:href="@{/top}">
+					キャンセル
+				</a>
+		</form>
 	</div>
+</div>
 </body>
+
 </html>
