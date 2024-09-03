@@ -112,6 +112,17 @@
 			band_recruiting.id = #{recruitingId}
 
 	</select>
+	
+	<!-- 募集記事修正 -->
+	<update id="modifyRecruiting">
+		update 
+			band_recruiting 
+		set 
+			title = #{title}, 
+			content = #{content} 
+		where 
+			id = #{recruitingId}
+	</update>
 
 	<!-- 募集記事削除 -->
 	<update id="deleteRecruiting">

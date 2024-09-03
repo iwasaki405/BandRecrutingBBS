@@ -3,6 +3,7 @@ package band.portfolio.repository;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import band.portfolio.domain.band.model.Recruiting;
 
@@ -20,6 +21,10 @@ public interface RecruitingMapper {
 
 	/** 募集記事1件取得 */
 	public Recruiting findRecruitingById(Integer recruitingId);
+
+	/** 募集記事修正  */
+	public void modifyRecruiting(@Param("recruitingId") Integer recruitingId, @Param("title") String title,
+			@Param("content") String content);
 
 	/** 募集記事削除 */
 	public void deleteRecruiting(Integer recruitingId);

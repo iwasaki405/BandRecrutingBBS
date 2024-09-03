@@ -79,7 +79,7 @@
 	<update id="modifyReply">
 		update
 			band_reply
-			set
+		set
 			content = #{content}
 		where
 			id = #{replyId}

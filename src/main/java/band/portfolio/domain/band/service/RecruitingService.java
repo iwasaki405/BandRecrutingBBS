@@ -18,6 +18,9 @@ public interface RecruitingService {
 	/** 募集記事1件取得 */
 	public Recruiting getRecruitingById(Integer recruitingId);
 
+	/** 募集記事修正  */
+	public void modifyRecruitingOne(Integer recruitingId, String title, String content);
+
 	/** 募集記事削除 */
 	public void deleteRecruitingOne(Integer recruitingId);
 

@@ -106,8 +106,6 @@ public class BBSController {
 		//入力チェック結果
 		if (bindingResult.hasErrors()) {
 
-			log.error("Validation errors: {}", bindingResult.getAllErrors());
-
 			model.addAttribute("recruitingForm", recruitingForm);
 
 			//NG:募集記事投稿画面に戻る
@@ -127,6 +125,7 @@ public class BBSController {
 	/** 募集記事個別画面表示 */
 	@GetMapping("/individual_post/{recruitingId}")
 	public String getIndividualPost(IndividualPostForm individualPostForm,
+			@ModelAttribute RecruitingForm recruitingForm,
 			@ModelAttribute ReplyForm replyForm,
 			@ModelAttribute ReplyModifyForm replyModifyForm, Model model,
 			@PathVariable("recruitingId") Integer recruitingId) {
@@ -136,6 +135,35 @@ public class BBSController {
 
 		//募集記事個別画面へ遷移
 		return "band/individual_post";
+
+	}
+
+	/** 募集記事修正  */
+	@PostMapping("/modifyRecruiting/{recruitingId}")
+	public String modifyRecruiting(IndividualPostForm individualPostForm,
+			@ModelAttribute @Validated RecruitingForm recruitingForm, BindingResult bindingResult,
+			@ModelAttribute ReplyForm replyForm, @ModelAttribute ReplyModifyForm replyModifyForm, Model model,
+			@PathVariable("recruitingId") Integer recruitingId,
+			RedirectAttributes redirectAttributes) {
+
+		if (bindingResult.hasErrors()) {
+
+			model.addAttribute("recruitingForm", recruitingForm);
+
+			//募集記事を1件取得しmodelに保存
+			populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+
+			return "band/individual_post";
+		}
+
+		//募集記事修正
+		recruitingService.modifyRecruitingOne(recruitingId, recruitingForm.getTitle(), recruitingForm.getContent());
+
+		//募集記事を1件取得しmodelに保存
+		populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+
+		//元いたバンド募集記事個別画面にに戻る
+		return "redirect:/individual_post/" + recruitingId;
 
 	}
 
@@ -153,7 +181,7 @@ public class BBSController {
 	/** 返信投稿 */
 	@PostMapping("/reply/{recruitingId}")
 	public String postReply(IndividualPostForm individualPostForm, @ModelAttribute @Validated ReplyForm replyForm,
-			BindingResult bindingResult,
+			BindingResult bindingResult, @ModelAttribute RecruitingForm recruitingForm,
 			@ModelAttribute ReplyModifyForm replyModifyForm, Model model, RedirectAttributes redirectAttributes) {
 
 		// SecurityContextHolderからAuthenticationオブジェクトを取得
@@ -166,8 +194,6 @@ public class BBSController {
 		log.info(replyForm.toString());
 
 		if (bindingResult.hasErrors()) {
-
-			log.error("Validation errors: {}", bindingResult.getAllErrors());
 
 			model.addAttribute("replyForm", replyForm);
 
@@ -194,11 +220,11 @@ public class BBSController {
 	@PostMapping("/modify/{replyId}")
 	public String modifyReply(IndividualPostForm individualPostForm,
 			@ModelAttribute @Validated ReplyModifyForm replyModifyForm, BindingResult bindingResult,
-			@ModelAttribute ReplyForm replyForm, Model model, @PathVariable("replyId") Integer replyId) {
+			@ModelAttribute RecruitingForm recruitingForm,
+			@ModelAttribute ReplyForm replyForm, Model model, @PathVariable("replyId") Integer replyId,
+			@RequestParam("recruitingId") Integer recruitingId, RedirectAttributes redirectAttributes) {
 
 		if (bindingResult.hasErrors()) {
-
-			log.error("Validation errors: {}", bindingResult.getAllErrors());
 
 			model.addAttribute("replymModifyForm", replyModifyForm);
 
@@ -212,11 +238,11 @@ public class BBSController {
 		//返信修正
 		replyService.modifyReplyOne(replyId, replyModifyForm.getContent());
 
-		//募集記事1件取得
+		//募集記事を1件取得しmodelに保存
 		populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
 
 		//元いたバンド募集記事個別画面にに戻る
-		return "band/individual_post";
+		return "redirect:/individual_post/" + recruitingId;
 	}
 
 	/** 返信削除 */
@@ -228,8 +254,7 @@ public class BBSController {
 		replyService.deleteReplyOne(replyId);
 
 		// 元いたバンド募集記事個別画面にリダイレクト
-		redirectAttributes.addAttribute("recruitingId", recruitingId);
-		return "redirect:/individual_post/{recruitingId}";
+		return "redirect:/individual_post/" + recruitingId;
 	}
 
 	/** 募集記事を1件取得しmodelに保存 */

@@ -25,7 +25,7 @@
 							<div id="liveAlertPlaceholder"></div>
 							<div class="d-flex justify-content-end align-items-center">
 								<th:block sec:authorize="isAuthenticated() == false">
-									<button type="button" class="btn btn-outline-success btn-sm" data-bs-dismiss="alert"
+									<button type="button" class="btn btn-outline-primary btn-sm" data-bs-dismiss="alert"
 										id="liveAlertBtn">返信</button>
 
 
@@ -86,7 +86,7 @@
 														<input type="hidden"
 															th:field="${individualPostForm.recruitingId}">
 														<div class="mb-3">
-															<label for="content" class="form-label">返信文入力 <span
+															<label for="content" class="form-label">返信文 <span
 																	class="badge bg-danger">必須</span></label>
 															<textarea class="form-control" id="content"
 																th:field="*{content}" rows="10"
@@ -97,7 +97,7 @@
 															<button type="button" class="btn btn-outline-secondary"
 																data-bs-dismiss="modal">キャンセル</button>
 															<button type="submit"
-																class="btn btn-outline-success">返信</button>
+																class="btn btn-outline-primary">返信</button>
 														</div>
 													</form>
 
@@ -106,9 +106,66 @@
 										</div>
 									</div>
 								</th:block>
+								
+															
+									<th:block th:if="${#authentication.name} == *{userId}">
+										
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-outline-primary btn-sm ms-2 mb-3"
+												data-bs-toggle="modal"
+												th:data-bs-target="'#recruitingModifyModal' + *{recruitingId}">
+												修正
+											</button>
+											<!-- Modal -->
+											<div class="modal fade" th:id="recruitingModifyModal + *{recruitingId}"
+												data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true"
+												tabindex="-1" aria-labelledby="recruitingModifyModalLabel">
+												<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h1 class="modal-title fs-5" id="recruitingModifyModalLabel">
+																募集記事修正画面
+															</h1>
+															<button type="button" class="btn-close"
+																data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															<form class="form" method="post"
+																th:action="@{'/modifyRecruiting/' + ${individualPostForm.recruitingId}}"
+																th:object="${recruitingForm}">
+																<input type="hidden"
+																	th:field="${individualPostForm.recruitingId}">
+																<div class="mb-3">
+																	<label for="content" class="form-label">タイトル</label>
+																	<input type="text" class="form-control" id="title"
+																		th:field="*{title}" 
+																		th:errorclass="is-invalid">
+																	<div class="invalid-feedback"
+																		th:errors="*{title}">
+																	</div>
+																	<label for="content" class="form-label">募集文<span
+																			class="badge bg-danger">必須</span></label>
+																	<textarea class="form-control" id="content"
+																		th:field="*{content}" rows="10"
+																		th:errorclass="is-invalid"></textarea>
+																	<div class="invalid-feedback"
+																		th:errors="*{content}">
+																	</div>
+																</div>
 
+																<div class="modal-footer">
+																	<button type="button"
+																		class="btn btn-outline-secondary"
+																		data-bs-dismiss="modal">キャンセル</button>
+																	<button type="submit"
+																		class="btn btn-outline-primary">修正</button>
+																</div>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
 
-								<th:block th:if="${#authentication.name} == *{userId}">
 									<!-- Button trigger modal -->
 									<button type="button" class="btn btn-outline-dark btn-sm mb-3 ms-2"
 										data-bs-toggle="modal" data-bs-target="#deleteModal">
@@ -175,7 +232,7 @@
 																<input type="hidden"
 																	th:field="${individualPostForm.recruitingId}">
 																<div class="mb-3">
-																	<label for="content" class="form-label">返信文入力 <span
+																	<label for="content" class="form-label">返信文 <span
 																			class="badge bg-danger">必須</span></label>
 																	<textarea class="form-control" id="content"
 																		th:field="*{content}" rows="10"

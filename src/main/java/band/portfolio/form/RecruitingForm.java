@@ -13,7 +13,7 @@ public class RecruitingForm {
 	@Length(max = 100)
 	private String title = "無題";
 	
-	@NotBlank
+	@NotBlank(message="募集文は必須入力です")
 	@Length(max = 300)
 	private String content;
 	

@@ -14,7 +14,7 @@ public class ReplyForm {
 	private Integer userId;
 	private Integer recruitingId;
 	
-	@NotBlank
+	@NotBlank(message="返信文は必須入力です")
 	@Length(max = 300)
 	private String content;
 

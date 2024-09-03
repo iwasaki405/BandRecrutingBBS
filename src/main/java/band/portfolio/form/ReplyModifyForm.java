@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class ReplyModifyForm {
 
-	@NotBlank
+	@NotBlank(message="返信文は必須入力です")
 	@Length(max = 300)
 	private String content;
 	

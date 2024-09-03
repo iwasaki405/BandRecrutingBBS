@@ -39,6 +39,12 @@ public class RecruitingServiceImpl implements RecruitingService {
 		return recruitingMapper.findRecruitingById(recruitingId);
 	}
 
+	/** 募集記事修正  */
+	@Override
+	public void modifyRecruitingOne(Integer recruitingId, String title, String content) {
+		recruitingMapper.modifyRecruiting(recruitingId, title, content);
+	}
+
 	/** 募集記事削除 */
 	@Override
 	public void deleteRecruitingOne(Integer recruitingId) {
