@@ -24,7 +24,8 @@ public interface RecruitingMapper {
 
 	/** 募集記事修正  */
 	public void modifyRecruiting(@Param("recruitingId") Integer recruitingId, @Param("title") String title,
-			@Param("content") String content);
+			@Param("content") String content, @Param("area") String area, @Param("minAge") Integer minAge,
+			@Param("maxAge") Integer maxAge, @Param("part") String part);
 
 	/** 募集記事削除 */
 	public void deleteRecruiting(Integer recruitingId);

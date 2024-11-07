@@ -5,7 +5,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Band</title>
+	<title>Session</title>
 </head>
 
 <body>
@@ -13,7 +13,7 @@
 		<h1 class="text-center mt-5 mb-4">バンドメンバー募集掲示板 <br>（障がい者用）</h1>
 		<p class="fs-5 text-center text-decoration-underline">サイト概要</p>
 		<p class="text-center">
-			当サイトは、身体や精神に障がいを持つ人がバンドを組みたいと思ったとき、<br>
+			当サイトは、身体や精神に障がいを持つ人がバンドを組みたいと思ったときに、<br>
 			同じ障がいを持つ人同士でバンドを組むことができるようにと立ち上げました。
 		</p>
 
@@ -74,7 +74,24 @@
 				<tr th:each="item : ${recruitingList}">
 					<td>
 						<a th:href="@{'/individual_post/' + ${item.recruitingId}}" th:text="${item.title}"></a>
-						<p class="text-end" th:text="投稿日： + ${item.createDateTime}"></p>
+						<th:block th:if="${item.title == null}">
+							<a th:href="@{'/individual_post/' + ${item.recruitingId}}">無題</a>
+						</th:block>
+						<div class="row mt-2">
+							<div class="col">
+								<span class="badge text-bg-info" th:text="${item.area}"></span>
+								<th:block th:if="${item.minAge >= 5 and item.maxAge <= 99}">
+									<span class="badge text-bg-success ms-1"
+										th:text="${item.minAge} + '歳～' + ${item.maxAge} + '歳'"></span>
+								</th:block>
+								<th:block th:if="${item.part != null}">
+									<span class="badge text-bg-secondary" th:text="${item.part + '募集'}"></span>
+								</th:block>
+							</div>
+							<div class="col text-end">
+								<p th:text="'投稿者：' + ${item.users.userName} + '　投稿日：' + ${item.createDateTime}"></p>
+							</div>
+						</div>
 					</td>
 				</tr>
 			</tbody>

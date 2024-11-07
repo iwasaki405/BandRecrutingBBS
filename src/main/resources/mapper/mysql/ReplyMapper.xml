@@ -6,8 +6,7 @@
 <mapper namespace="band.portfolio.repository.ReplyMapper">
 
 	<!-- マッピング定義（募集側） -->
-	<resultMap type="band.portfolio.domain.band.model.Recruiting"
-		id="recruiting">
+	<resultMap type="band.portfolio.domain.band.model.Recruiting" id="recruiting">
 		<id column="id" property="recruitingId" />
 		<result column="user_id" property="userId" />
 		<result column="title" property="title" />
@@ -15,13 +14,11 @@
 		<result column="is_deleted" property="isDeleted" />
 		<result column="create_date_time" property="createDateTime" />
 		<result column="update_date_time" property="updateDateTime" />
-		<collection property="replyList" resultMap="reply"
-			columnPrefix="reply_" />
+		<collection property="replyList" resultMap="reply" columnPrefix="reply_" />
 	</resultMap>
 
 	<!-- マッピング定義（返信側） -->
-	<resultMap type="band.portfolio.domain.band.model.Reply"
-		id="reply">
+	<resultMap type="band.portfolio.domain.band.model.Reply" id="reply">
 		<id column="id" property="replyId" />
 		<result column="user_id" property="userId" />
 		<result column="recruiting_id" property="recruitingId" />
@@ -29,25 +26,40 @@
 		<result column="is_deleted" property="isDeleted" />
 		<result column="create_date_time" property="createDateTime" />
 		<result column="update_date_time" property="updateDateTime" />
-		<association property="recruiting" resultMap="recruiting"
-			columnPrefix="rec_" />
+		<association property="users" resultMap="users" />
+		<association property="recruiting" resultMap="recruiting" columnPrefix="rec_" />
+	</resultMap>
+	
+	<!-- マッピング定義（ユーザー） -->
+	<resultMap type="band.portfolio.domain.band.model.Users" id="users">
+		<id column="id" property="userId" />
+		<result column="pass" property="password" />
+		<result column="user_name" property="userName" />
+		<result column="is_admin" property="role" />
+		<result column="is_deleted" property="isDeleted" />
+		<result column="create_date_time" property="createDateTime" />
+		<result column="update_date_time" property="updateDateTime" />
 	</resultMap>
 
 
 	<!-- (MyPage)返信一覧取得 -->
 	<select id="findReplyMyList" resultMap="reply">
 		select
-			band_recruiting.id
-			as rec_id,
+			band_recruiting.id as rec_id,
 			band_recruiting.title as rec_title,
 			band_reply.id,
 			band_reply.content,
-			band_reply.update_date_time
+			band_reply.update_date_time, 
+			users.user_name
 		from
 			band_reply
 		left join
 			band_recruiting
 		on band_reply.recruiting_id = band_recruiting.id
+		left join
+			users 
+		on 
+			users.id = band_reply.user_id 
 		where
 			band_reply.is_deleted = 0
 		and

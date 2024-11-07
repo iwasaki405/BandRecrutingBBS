@@ -41,6 +41,13 @@ public class BBSController {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	/** Validation時、NotBlankの空白のすり抜けを阻止する 
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+	}
+	*/
+
 	/** TOP画面を表示 */
 	@GetMapping("/top")
 	public String getTop(@RequestParam(name = "searchParam", required = false) String searchParam, Model model) {
@@ -77,13 +84,18 @@ public class BBSController {
 		List<Reply> replyList = replyService.getReplyMyList(Integer.parseInt(authentication.getName()));
 		model.addAttribute("replyList", replyList);
 
+		log.info(recruitingList.toString());
+
 		//マイページ画面へ遷移
 		return "band/mypage";
 	}
 
 	/** 募集記事投稿画面を表示 */
 	@GetMapping("/recruiting")
-	public String getRecruiting(@ModelAttribute RecruitingForm recruitingForm) {
+	public String getRecruiting(@ModelAttribute RecruitingForm recruitingForm, Model model) {
+
+		//都道府県配列、募集パートリストを取得して保存
+		this.getAreaArrayAndPartList(model);
 
 		//募集記事投稿画面へ遷移
 		return "band/recruiting";
@@ -106,6 +118,9 @@ public class BBSController {
 		//入力チェック結果
 		if (bindingResult.hasErrors()) {
 
+			//都道府県配列、募集パートリストを取得して保存
+			this.getAreaArrayAndPartList(model);
+
 			model.addAttribute("recruitingForm", recruitingForm);
 
 			//NG:募集記事投稿画面に戻る
@@ -127,11 +142,13 @@ public class BBSController {
 	public String getIndividualPost(IndividualPostForm individualPostForm,
 			@ModelAttribute RecruitingForm recruitingForm,
 			@ModelAttribute ReplyForm replyForm,
-			@ModelAttribute ReplyModifyForm replyModifyForm, Model model,
-			@PathVariable("recruitingId") Integer recruitingId) {
+			@ModelAttribute ReplyModifyForm replyModifyForm, Model model) {
+
+		//都道府県配列、募集パートリストを取得して保存
+		this.getAreaArrayAndPartList(model);
 
 		//募集記事を1件取得しmodelに保存
-		populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+		this.populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
 
 		//募集記事個別画面へ遷移
 		return "band/individual_post";
@@ -150,17 +167,24 @@ public class BBSController {
 
 			model.addAttribute("recruitingForm", recruitingForm);
 
+			//都道府県配列、募集パートリストを取得して保存
+			this.getAreaArrayAndPartList(model);
+
 			//募集記事を1件取得しmodelに保存
-			populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+			this.populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
 
 			return "band/individual_post";
 		}
 
 		//募集記事修正
-		recruitingService.modifyRecruitingOne(recruitingId, recruitingForm.getTitle(), recruitingForm.getContent());
+		recruitingService.modifyRecruitingOne(recruitingId, recruitingForm.getTitle(),
+				recruitingForm.getContent(), recruitingForm.getArea(),
+				recruitingForm.getMinAge() != null ? recruitingForm.getMinAge() : null,
+				recruitingForm.getMaxAge() != null ? recruitingForm.getMaxAge() : null,
+				recruitingForm.getPart());
 
 		//募集記事を1件取得しmodelに保存
-		populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+		this.populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
 
 		//元いたバンド募集記事個別画面にに戻る
 		return "redirect:/individual_post/" + recruitingId;
@@ -197,8 +221,11 @@ public class BBSController {
 
 			model.addAttribute("replyForm", replyForm);
 
+			//都道府県配列、募集パートリストを取得して保存
+			this.getAreaArrayAndPartList(model);
+
 			// 募集記事1件取得
-			populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+			this.populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
 
 			//元のページに戻る
 			return "band/individual_post";
@@ -228,8 +255,11 @@ public class BBSController {
 
 			model.addAttribute("replymModifyForm", replyModifyForm);
 
+			//都道府県配列、募集パートリストを取得して保存
+			this.getAreaArrayAndPartList(model);
+
 			//募集記事を1件取得しmodelに保存
-			populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+			this.populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
 
 			return "band/individual_post";
 
@@ -239,7 +269,7 @@ public class BBSController {
 		replyService.modifyReplyOne(replyId, replyModifyForm.getContent());
 
 		//募集記事を1件取得しmodelに保存
-		populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
+		this.populateIndividualPostFormModel(individualPostForm, model, individualPostForm.getRecruitingId());
 
 		//元いたバンド募集記事個別画面にに戻る
 		return "redirect:/individual_post/" + recruitingId;
@@ -266,7 +296,22 @@ public class BBSController {
 		//RecruitingをIndividualPostFormに変換しmodelに保存
 		individualForm = modelMapper.map(recruiting, IndividualPostForm.class);
 		individualForm.setReplyList(recruiting.getReplyList());
+		log.info(individualForm.toString());
 		model.addAttribute("individualPostForm", individualForm);
 
 	}
+
+	/** 都道府県配列、募集パートリストを取得して保存 */
+	private void getAreaArrayAndPartList(Model model) {
+
+		//都道府県配列を取得して保存
+		String[] areaArray = recruitingService.getAreaArray();
+		model.addAttribute("areaArray", areaArray);
+
+		//募集パートのリストを取得して保存
+		List<String> partList = recruitingService.getPartList();
+		model.addAttribute("partList", partList);
+
+	}
+
 }

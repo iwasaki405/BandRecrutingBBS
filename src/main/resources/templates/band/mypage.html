@@ -14,29 +14,48 @@
 		<h1 class="text-center mt-5">MyPage</h1>
 		<h5 class="mt-5 mb-3" th:text="${#authentication.getPrincipal().userName} + 'さんの募集記事一覧表示'"></h5>
 		<!-- 一覧表示 -->
-		<table class="table table-striped table-hover">
+		<table class="table table-hover">
 			<tbody>
 				<tr th:each="item : ${recruitingList}">
 					<td>
 						<a th:href="@{'/individual_post/' + ${item.recruitingId}}" th:text="${item.title}"></a>
-						<p class="text-end" th:text="投稿日：+ ${item.createDateTime}"></p>
+						<div class="row mt-2">
+							<div class="col">
+								<span class="badge text-bg-info" th:text="${item.area}"></span>
+
+								<th:block th:if="${item.minAge >= 5 and item.maxAge <= 99}">
+									<span class="badge text-bg-success ms-1"
+										th:text="${item.minAge} + '歳～' + ${item.maxAge} + '歳'"></span>
+								</th:block>
+								<th:block th:if="${item.part != null}">
+									<span class="badge text-bg-secondary" th:text="${item.part + '募集'}"></span>
+								</th:block>
+							</div>
+							<div class="col text-end">
+								<p th:text="'投稿者：' + ${item.users.userName} + '　投稿日：' + ${item.createDateTime}"></p>
+							</div>
+
+						</div>
 					</td>
 				</tr>
 			</tbody>
 		</table>
+
 		<th:block th:if="${#lists.isEmpty(recruitingList)}">
 			<p>あなたが投稿した記事は0件です</p>
 		</th:block>
 		<h5 class="mb-3" th:text="${#authentication.getPrincipal().userName} + 'さんの返信文一覧表示'"></h5>
 		<!-- 一覧表示 -->
-		<table class="table table-striped table-hover">
+		<table class="table table-hover">
 			<tbody>
 				<tr th:each="item : ${replyList}">
 					<td>
 						<a th:href="@{'/individual_post/' + ${item.recruiting.recruitingId}}"
 							th:text="${item.recruiting.title}"></a>
 						<p class="text-break" th:text="${item.content}"></p>
-						<p class="text-end" th:text="投稿日： + ${item.updateDateTime}"></p>
+						<div class="col text-end">
+							<p th:text="'投稿者：' + ${item.users.userName} + '　投稿日：' + ${item.updateDateTime}"></p>
+						</div>
 					</td>
 				</tr>
 			</tbody>

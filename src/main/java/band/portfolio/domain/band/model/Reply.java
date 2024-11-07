@@ -15,4 +15,5 @@ public class Reply {
 	private LocalDate createDateTime;
 	private LocalDate updateDateTime;
 	private Recruiting recruiting;
+	private Users users;
 }

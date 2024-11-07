@@ -94,10 +94,11 @@
 															<div class="invalid-feedback" th:errors="*{content}"></div>
 														</div>
 														<div class="modal-footer">
-															<button type="button" class="btn btn-outline-secondary"
-																data-bs-dismiss="modal">キャンセル</button>
 															<button type="submit"
 																class="btn btn-outline-primary">返信</button>
+															<button type="button" class="btn btn-outline-secondary"
+																data-bs-dismiss="modal">キャンセル</button>
+
 														</div>
 													</form>
 
@@ -106,65 +107,115 @@
 										</div>
 									</div>
 								</th:block>
-								
-															
-									<th:block th:if="${#authentication.name} == *{userId}">
-										
-											<!-- Button trigger modal -->
-											<button type="button" class="btn btn-outline-primary btn-sm ms-2 mb-3"
-												data-bs-toggle="modal"
-												th:data-bs-target="'#recruitingModifyModal' + *{recruitingId}">
-												修正
-											</button>
-											<!-- Modal -->
-											<div class="modal fade" th:id="recruitingModifyModal + *{recruitingId}"
-												data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true"
-												tabindex="-1" aria-labelledby="recruitingModifyModalLabel">
-												<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-													<div class="modal-content">
-														<div class="modal-header">
-															<h1 class="modal-title fs-5" id="recruitingModifyModalLabel">
-																募集記事修正画面
-															</h1>
-															<button type="button" class="btn-close"
-																data-bs-dismiss="modal" aria-label="Close"></button>
-														</div>
-														<div class="modal-body">
-															<form class="form" method="post"
-																th:action="@{'/modifyRecruiting/' + ${individualPostForm.recruitingId}}"
-																th:object="${recruitingForm}">
-																<input type="hidden"
-																	th:field="${individualPostForm.recruitingId}">
-																<div class="mb-3">
-																	<label for="content" class="form-label">タイトル</label>
-																	<input type="text" class="form-control" id="title"
-																		th:field="*{title}" 
-																		th:errorclass="is-invalid">
-																	<div class="invalid-feedback"
-																		th:errors="*{title}">
-																	</div>
-																	<label for="content" class="form-label">募集文<span
-																			class="badge bg-danger">必須</span></label>
-																	<textarea class="form-control" id="content"
-																		th:field="*{content}" rows="10"
-																		th:errorclass="is-invalid"></textarea>
-																	<div class="invalid-feedback"
-																		th:errors="*{content}">
-																	</div>
-																</div>
 
-																<div class="modal-footer">
-																	<button type="button"
-																		class="btn btn-outline-secondary"
-																		data-bs-dismiss="modal">キャンセル</button>
-																	<button type="submit"
-																		class="btn btn-outline-primary">修正</button>
+
+								<th:block th:if="${#authentication.name} == *{userId}">
+
+									<!-- Button trigger modal -->
+									<button type="button" class="btn btn-outline-primary btn-sm ms-2 mb-3"
+										data-bs-toggle="modal"
+										th:data-bs-target="'#recruitingModifyModal' + *{recruitingId}">
+										修正
+									</button>
+									<!-- Modal -->
+									<div class="modal fade" th:id="recruitingModifyModal + *{recruitingId}"
+										data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true"
+										tabindex="-1" aria-labelledby="recruitingModifyModalLabel">
+										<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h1 class="modal-title fs-5" id="recruitingModifyModalLabel">
+														募集記事修正画面
+													</h1>
+													<button type="button" class="btn-close" data-bs-dismiss="modal"
+														aria-label="Close"></button>
+												</div>
+												<div class="modal-body">
+													<form class="form" method="post"
+														th:action="@{'/modifyRecruiting/' + ${individualPostForm.recruitingId}}"
+														th:object="${recruitingForm}">
+														<input type="hidden"
+															th:field="${individualPostForm.recruitingId}">
+														<div class="mb-3">
+															<label for="content" class="form-label">タイトル<span
+																	class="badge bg-danger ms-2">必須</span></label>
+															<input type="text" class="form-control" id="title"
+																th:field="*{title}" th:errorclass="is-invalid">
+															<div class="invalid-feedback" th:errors="*{title}">
+															</div>
+															<label for="content" class="form-label mt-3">募集地域</label>
+															<select name="area" class="form-select">
+																<option disabled selected>募集地域を選択</option>
+																<th:block th:each="area : ${areaArray}">
+																	<option th:value="${area}" th:text="${area}"
+																		th:field="*{area}">
+																	</option>
+																</th:block>
+															</select>
+															<div class="row mb-3 mt-3">
+																<label class="form-label">募集年齢</label>
+																<div class="col-auto">
+																	<input type="number" step="1"
+																		class="form-control text-center"
+																		th:field="*{minAge}" th:errorclass="is-invalid"
+																		style="width: 4rem;">
+																	<div class="invalid-feedback" th:errors="*{minAge}">
+																	</div>
 																</div>
-															</form>
+																<div class="col-auto align-self-center">
+																	<span>歳から</span>
+																</div>
+																<div class="col-auto">
+																	<input type="number" step="1"
+																		class="form-control text-center"
+																		th:field="*{maxAge}" th:errorclass="is-invalid"
+																		style="width: 4rem;">
+																	<div class="invalid-feedback" th:errors="*{maxAge}">
+																	</div>
+																</div>
+																<div class="col-auto align-self-center">
+																	<span>歳まで</span>
+																</div>
+															</div>
+															<div class="mb-4">
+																<label class="form-label me-2">募集パート</label>
+																<th:block th:each="part, stat : ${partList}">
+																	<div class="form-check form-check-inline">
+																		<input type="checkbox" th:value="${part}"
+																			th:field="*{part}" class="form-check-input"
+																			th:id="'part-' + ${stat.index}">
+																		<label th:for="'part-' + ${stat.index}"
+																			class="form-check-label"
+																			th:text="${part}"></label>
+																	</div>
+																</th:block>
+																<p style="font-size: 13px">※
+																	Vo.=ボーカル、Gt.=ギター、Ba.=ベース、Dr.=ドラム、Key.=キーボード</p>
+															</div>
+															<label for="content" class="form-label">募集文<span
+																	class="badge bg-danger ms-2">必須</span></label>
+															<textarea class="form-control" id="content"
+																th:field="*{content}" rows="10"
+																th:errorclass="is-invalid"></textarea>
+															<div class="invalid-feedback" th:errors="*{content}">
+															</div>
+
+
+
 														</div>
-													</div>
+
+														<div class="modal-footer">
+															<button type="submit"
+																class="btn btn-outline-primary">修正</button>
+															<button type="button" class="btn btn-outline-secondary"
+																data-bs-dismiss="modal">キャンセル</button>
+
+														</div>
+													</form>
 												</div>
 											</div>
+										</div>
+									</div>
 
 									<!-- Button trigger modal -->
 									<button type="button" class="btn btn-outline-dark btn-sm mb-3 ms-2"
@@ -185,17 +236,33 @@
 													削除してもよろしいですか？
 												</div>
 												<div class="modal-footer">
-													<button type="button" class="btn btn-outline-secondary"
-														data-bs-dismiss="modal">キャンセル</button>
 													<a class="btn btn-outline-danger"
 														th:href="@{'/delete/' + *{recruitingId}}">削除</a>
+													<button type="button" class="btn btn-outline-secondary"
+														data-bs-dismiss="modal">キャンセル</button>
+
 												</div>
 											</div>
 										</div>
 									</div>
 								</th:block>
 							</div>
-							<p class="text-end" th:text="投稿日： + *{createDateTime}"></p>
+							<div class="row mt-2">
+								<div class="col">
+									<span class="badge text-bg-info" th:text="*{area}"></span>
+									<th:block th:if="*{minAge >= 5 and maxAge <= 99}">
+										<span class="badge text-bg-success ms-1"
+											th:text="*{minAge} + '歳～' + *{maxAge} + '歳'"></span>
+									</th:block>
+									<th:block th:if="*{part != null}">
+										<span class="badge text-bg-secondary ms-1" th:text="*{part} + '募集'"></span>
+									</th:block>
+								</div>
+								<div class="col text-end">
+									<p th:text="'投稿者：' + *{users.userName} + '　投稿日：' + *{createDateTime}"></p>
+								</div>
+							</div>
+
 						</td>
 					</tr>
 
@@ -243,11 +310,12 @@
 																</div>
 
 																<div class="modal-footer">
+																	<button type="submit"
+																		class="btn btn-outline-primary">修正</button>
 																	<button type="button"
 																		class="btn btn-outline-secondary"
 																		data-bs-dismiss="modal">キャンセル</button>
-																	<button type="submit"
-																		class="btn btn-outline-primary">修正</button>
+
 																</div>
 															</form>
 														</div>
@@ -278,8 +346,6 @@
 															削除してもよろしいですか？
 														</div>
 														<div class="modal-footer">
-															<button type="button" class="btn btn-outline-secondary"
-																data-bs-dismiss="modal">キャンセル</button>
 															<form method="post"
 																th:action="@{'/delete_reply/' + ${item.replyId}}">
 																<input type="hidden" name="recruitingId"
@@ -287,6 +353,9 @@
 																<button type="submit"
 																	class="btn btn-outline-danger">削除</button>
 															</form>
+															<button type="button" class="btn btn-outline-secondary"
+																data-bs-dismiss="modal">キャンセル</button>
+
 
 														</div>
 													</div>
@@ -294,8 +363,10 @@
 											</div>
 										</div>
 									</th:block>
-									<p class="text-end" th:text="投稿日： + ${item.updateDateTime}"></p>
-
+									<div class="col text-end">
+										<p th:text="'投稿者：' + ${item.users.userName} + '　投稿日：' + ${item.updateDateTime}">
+										</p>
+									</div>
 								</td>
 							</th:block>
 						</tr>

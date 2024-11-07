@@ -6,22 +6,24 @@
 <mapper namespace="band.portfolio.repository.RecruitingMapper">
 
 	<!-- マッピング定義（募集側） -->
-	<resultMap type="band.portfolio.domain.band.model.Recruiting"
-		id="recruiting">
+	<resultMap type="band.portfolio.domain.band.model.Recruiting" id="recruiting">
 		<id column="id" property="recruitingId" />
 		<result column="user_id" property="userId" />
 		<result column="title" property="title" />
 		<result column="content" property="content" />
+		<result column="area" property="area" />
+		<result column="min_age" property="minAge" />
+		<result column="max_age" property="maxAge" />
+		<result column="part" property="part" />
 		<result column="is_deleted" property="isDeleted" />
 		<result column="create_date_time" property="createDateTime" />
 		<result column="update_date_time" property="updateDateTime" />
-		<collection property="replyList" resultMap="reply"
-			columnPrefix="reply_" />
+		<association property="users" resultMap="users" columnPrefix="users_recruiting_" />
+		<collection property="replyList" resultMap="reply" columnPrefix="reply_" />
 	</resultMap>
 
 	<!-- マッピング定義（返信側） -->
-	<resultMap type="band.portfolio.domain.band.model.Reply"
-		id="reply">
+	<resultMap type="band.portfolio.domain.band.model.Reply" id="reply">
 		<id column="id" property="replyId" />
 		<result column="user_id" property="userId" />
 		<result column="recruiting_id" property="recruitingId" />
@@ -29,8 +31,18 @@
 		<result column="is_deleted" property="isDeleted" />
 		<result column="create_date_time" property="createDateTime" />
 		<result column="update_date_time" property="updateDateTime" />
-		<association property="recruiting" resultMap="recruiting"
-			columnPrefix="rec_" />
+		<association property="users" resultMap="users" columnPrefix="users_reply_"/>
+	</resultMap>
+	
+	<!-- マッピング定義（ユーザー） -->
+	<resultMap type="band.portfolio.domain.band.model.Users" id="users">
+		<id column="id" property="userId" />
+		<result column="pass" property="password" />
+		<result column="user_name" property="userName" />
+		<result column="is_admin" property="role" />
+		<result column="is_deleted" property="isDeleted" />
+		<result column="create_date_time" property="createDateTime" />
+		<result column="update_date_time" property="updateDateTime" />
 	</resultMap>
 
 
@@ -40,12 +52,20 @@
 			user_id,
 			title,
 			content,
+			area, 
+			min_age, 
+			max_age, 
+			part, 
 			is_deleted
 		)
 		values(
 			#{userId},
 			#{title},
 			#{content},
+			#{area}, 
+			#{minAge}, 
+			#{maxAge},
+			#{part},  
 			0
 		);
 	</insert>
@@ -53,65 +73,103 @@
 	<!-- 募集記事一覧取得 -->
 	<select id="findRecruitingList" resultMap="recruiting">
 		select
-			id,
-			user_id,
-			title,
-			content,
-			create_date_time
+			band_recruiting.id,
+			band_recruiting.user_id, 
+			band_recruiting.title,
+			band_recruiting.content,
+			band_recruiting.area, 
+			band_recruiting.min_age, 
+			band_recruiting.max_age, 
+			band_recruiting.part, 
+			band_recruiting.create_date_time, 
+			users.user_name as users_recruiting_user_name 
 		from
 			band_recruiting
+		left join users
+		on 
+			users.id = band_recruiting.user_id 
 		where
-			is_deleted = 0
+			users.is_deleted = 0 
+		and 
+			band_recruiting.is_deleted = 0 
 		<if test="searchParam != null">
 			and
-				title like concat('%', #{searchParam}, '%')
+				(
+					title like concat('%', #{searchParam}, '%')
+				 or
+					area like concat('%', #{searchParam}, '%')
+				 or
+				 	min_age like concat('%', #{searchParam}, '%')
+				 or 
+				 	max_age like concat('%', #{searchParam}, '%')
+				 or
+				 	part like concat('%', #{searchParam}, '%')
+				)
 		</if>
 		order by
-			create_date_time
+			band_recruiting.create_date_time
 		desc
 	</select>
 
 	<!-- (MyPage)募集記事一覧取得 -->
 	<select id="findRecruitingMyList" resultMap="recruiting">
 		select
-			id,
-			title,
-			content,
-			create_date_time
-		from
-			band_recruiting
-		where
-			is_deleted = 0
-		and
-			user_id = #{userId}
-		order by
-			create_date_time
-		desc
-	</select>
-
-	<!-- 募集記事1件取得 -->
-	<select id="findRecruitingById" resultMap="recruiting">
-		select
 			band_recruiting.id,
-			band_recruiting.user_id,
 			band_recruiting.title,
 			band_recruiting.content,
-			band_recruiting.create_date_time,
-			band_reply.id as reply_id,
-			band_reply.user_id as reply_user_id,
-			band_reply.content as reply_content,
-			band_reply.is_deleted as
-			reply_is_deleted,
-			band_reply.update_date_time as reply_update_date_time
+			band_recruiting.area, 
+			band_recruiting.min_age, 
+			band_recruiting.max_age, 
+			band_recruiting.part, 
+			band_recruiting.create_date_time, 
+			users.user_name as users_recruiting_user_name 
 		from
 			band_recruiting
-		left join band_reply
+		left join users
 		on 
-			band_recruiting.id =band_reply.recruiting_id
+			users.id = band_recruiting.user_id 
 		where
-			band_recruiting.id = #{recruitingId}
-
+			users.is_deleted = 0 
+		and 
+			band_recruiting.is_deleted = 0 
+		and
+			band_recruiting.user_id = #{userId}
+		order by
+			band_recruiting.create_date_time
+		desc
 	</select>
+	
+	
+	 <!-- 募集記事1件取得 -->
+    <select id="findRecruitingById" resultMap="recruiting">
+        select
+            band_recruiting.id,
+            band_recruiting.user_id,
+            band_recruiting.title,
+            band_recruiting.content,
+            band_recruiting.area, 
+            band_recruiting.min_age, 
+            band_recruiting.max_age, 
+            band_recruiting.part, 
+            band_recruiting.create_date_time,
+            band_reply.id as reply_id,
+            band_reply.user_id as reply_user_id,
+            band_reply.content as reply_content,
+            band_reply.is_deleted as reply_is_deleted,
+            band_reply.update_date_time as reply_update_date_time, 
+            users_recruiting.user_name as users_recruiting_user_name, 
+            users_reply.user_name as reply_users_reply_user_name
+        from
+            band_recruiting 
+        left join band_reply 
+            on band_recruiting.id = band_reply.recruiting_id 
+        left join users as users_recruiting 
+            on users_recruiting.id = band_recruiting.user_id 
+        left join users as users_reply 
+            on users_reply.id = band_reply.user_id 
+        where 
+            band_recruiting.id = #{recruitingId}
+    </select>
 	
 	<!-- 募集記事修正 -->
 	<update id="modifyRecruiting">
@@ -119,7 +177,11 @@
 			band_recruiting 
 		set 
 			title = #{title}, 
-			content = #{content} 
+			content = #{content}, 
+			area = #{area}, 
+			min_age = #{minAge}, 
+			max_age = #{maxAge}, 
+			part = #{part} 
 		where 
 			id = #{recruitingId}
 	</update>
